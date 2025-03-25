@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { width: 600px; margin: 50px auto; text-align: left; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Project Details</h2>
+        <p><strong>Project ID:</strong> <span id="projectID"></span></p>
+        <p><strong>Project Name:</strong> <span id="projectName"></span></p>
+        <p><strong>Project Manager:</strong> <span id="projectManager"></span></p>
+        <p><strong>Start Date:</strong> <span id="startDate"></span></p>
+        <p><strong>End Date:</strong> <span id="endDate"></span></p>
+        <p><strong>RAG Status:</strong> <span id="ragStatus"></span></p>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectID = urlParams.get("id");
+
+        if (projectID) {
+            document.getElementById("projectID").innerText = projectID;
+            document.getElementById("projectName").innerText = "Sample Project";
+            document.getElementById("projectManager").innerText = "John Doe";
+            document.getElementById("startDate").innerText = "2025-01-01";
+            document.getElementById("endDate").innerText = "2025-12-31";
+            document.getElementById("ragStatus").innerText = "Green";
+        } else {
+            document.body.innerHTML = "<h2>Project Not Found</h2>";
+        }
+    </script>
+</body>
+</html>
