@@ -3,36 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Details</title>
+    <title>Project Management</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         .container { width: 600px; margin: 50px auto; text-align: left; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 10px; }
+        label { font-weight: bold; }
+        input, select { padding: 5px; }
+        button { padding: 5px; cursor: pointer; margin-top: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        a { text-decoration: none; color: blue; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Project Details</h2>
-        <p><strong>Project ID:</strong> <span id="projectID"></span></p>
-        <p><strong>Project Name:</strong> <span id="projectName"></span></p>
-        <p><strong>Project Manager:</strong> <span id="projectManager"></span></p>
-        <p><strong>Start Date:</strong> <span id="startDate"></span></p>
-        <p><strong>End Date:</strong> <span id="endDate"></span></p>
-        <p><strong>RAG Status:</strong> <span id="ragStatus"></span></p>
+        <h2>Project Management</h2>
+        <div class="form-group">
+            <label for="projectID">Project ID:</label>
+            <input type="text" id="projectID" placeholder="Enter project ID" disabled>
+        </div>
+        <div class="form-group">
+            <label for="projectName">Project Name:</label>
+            <input type="text" id="projectName" placeholder="Enter project name">
+        </div>
+        <div class="form-group">
+            <label for="projectManager">Project Manager:</label>
+            <input type="text" id="projectManager" placeholder="Enter project manager">
+        </div>
+        <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate">
+        </div>
+        <div class="form-group">
+            <label for="ragStatus">RAG Status:</label>
+            <select id="ragStatus">
+                <option value="Red">Red</option>
+                <option value="Amber">Amber</option>
+                <option value="Green">Green</option>
+            </select>
+        </div>
+        <button onclick="saveProjectDetails()">Save Changes</button>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Project ID</th>
+                    <th>Project Name</th>
+                    <th>Project Manager</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>RAG Status</th>
+                </tr>
+            </thead>
+            <tbody id="projectTableBody">
+            </tbody>
+        </table>
     </div>
-
+    
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const projectID = urlParams.get("id");
-
-        if (projectID) {
-            document.getElementById("projectID").innerText = projectID;
-            document.getElementById("projectName").innerText = "Sample Project";
-            document.getElementById("projectManager").innerText = "John Doe";
-            document.getElementById("startDate").innerText = "2025-01-01";
-            document.getElementById("endDate").innerText = "2025-12-31";
-            document.getElementById("ragStatus").innerText = "Green";
-        } else {
-            document.body.innerHTML = "<h2>Project Not Found</h2>";
+        function saveProjectDetails() {
+            let projectName = document.getElementById("projectName").value.trim();
+            let projectManager = document.getElementById("projectManager").value.trim();
+            let startDate = document.getElementById("startDate").value;
+            let endDate = document.getElementById("endDate").value;
+            let ragStatus = document.getElementById("ragStatus").value;
+            
+            if (projectName === "" || projectManager === "" || startDate === "" || endDate === "") return;
+            
+            alert("Project details updated successfully!");
         }
     </script>
 </body>
