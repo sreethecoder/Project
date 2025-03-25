@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Management</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { width: 400px; margin: 50px auto; }
+        input { width: 70%; padding: 5px; margin-bottom: 10px; }
+        button { padding: 5px; cursor: pointer; }
+        .project { margin-top: 20px; padding: 10px; border: 1px solid #ddd; }
+        .milestone { margin-top: 10px; padding: 5px; border: 1px dashed #aaa; }
+        .completed { text-decoration: line-through; color: gray; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Project Management</h2>
+        <input type="text" id="projectID" placeholder="Enter project ID">
+        <input type="text" id="projectName" placeholder="Enter project name">
+        <input type="text" id="projectManager" placeholder="Enter project manager">
+        <input type="date" id="startDate" placeholder="Start date">
+        <input type="date" id="endDate" placeholder="End date">
+        <button onclick="addProject()">Add Project</button>
+        <div id="projectList"></div>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", loadProjects);
+        
+        function addProject() {
+            let projectID = document.getElementById("projectID").value.trim();
+            let projectName = document.getElementById("projectName").value.trim();
+            let projectManager = document.getElementById("projectManager").value.trim();
+            let startDate = document.getElementById("startDate").value;
+            let endDate = document.getElementById("endDate").value;
+            
+            if (projectID === "" || projectName === "" || projectManager === "" || startDate === "" || endDate === "") return;
+            
+            let projectList = document.getElementById("projectList");
+            let projectDiv = document.createElement("div");
+            projectDiv.classList.add("project");
+            projectDiv.innerHTML = `<h3>${projectName} (ID: ${projectID})</h3>
+                <p>Manager: ${projectManager}</p>
+                <p>Start Date: ${startDate}</p>
+                <p>End Date: ${endDate}</p>
+                <input type='text' placeholder='Add milestone...' class='milestoneInput'>
+                <input type='date' class='milestoneDate'>
+                <button onclick='addMilestone(this)'>Add Milestone</button>
+                <div class='milestoneList'></div>
+                <input type='text' placeholder='Add task...' class='taskInput'>
+                <button onclick='addTask(this)'>Add Task</button>
+                <ul></ul>`;
+            
+            projectList.appendChild(projectDiv);
+            document.getElementById("projectID").value = "";
+            document.getElementById("projectName").value = "";
+            document.getElementById("projectManager").value = "";
+            document.getElementById("startDate").value = "";
+            document.getElementById("endDate").value = "";
+            saveProjects();
+        }
+        
+        function saveProjects() {
+            let projects = [];
+            document.querySelectorAll(".project").forEach(project => {
+                let projectHeader = project.querySelector("h3").innerText;
+                let projectID = projectHeader.match(/ID: (\S+)/)?.[1] || "";
+                let projectName = projectHeader.split(" (ID:")[0];
+                let projectManager = project.querySelector("p:nth-of-type(1)").innerText.replace("Manager: ", "");
+                let startDate = project.querySelector("p:nth-of-type(2)").innerText.replace("Start Date: ", "");
+                let endDate = project.querySelector("p:nth-of-type(3)").innerText.replace("End Date: ", "");
+                let milestones = [];
+                project.querySelectorAll(".milestone").forEach(milestone => {
+                    let milestoneText = milestone.querySelector("strong").innerText;
+                    let dueDate = milestone.innerText.match(/\(Due: (.*?)\)/)?.[1] || "";
+                    milestones.push({ name: milestoneText, dueDate: dueDate });
+                });
+                let tasks = [];
+                project.querySelectorAll("ul li").forEach(task => {
+                    tasks.push({ text: task.textContent.replace("❌", ""), completed: task.classList.contains("completed") });
+                });
+                projects.push({ id: projectID, name: projectName, manager: projectManager, startDate: startDate, endDate: endDate, milestones: milestones, tasks: tasks });
+            });
+            localStorage.setItem("projects", JSON.stringify(projects));
+        }
+        
+        function loadProjects() {
+            let savedProjects = JSON.parse(localStorage.getItem("projects")) || [];
+            let projectList = document.getElementById("projectList");
+            savedProjects.forEach(project => {
+                let projectDiv = document.createElement("div");
+                projectDiv.classList.add("project");
+                projectDiv.innerHTML = `<h3>${project.name} (ID: ${project.id})</h3>
+                    <p>Manager: ${project.manager}</p>
+                    <p>Start Date: ${project.startDate}</p>
+                    <p>End Date: ${project.endDate}</p>
+                    <input type='text' placeholder='Add milestone...' class='milestoneInput'>
+                    <input type='date' class='milestoneDate'>
+                    <button onclick='addMilestone(this)'>Add Milestone</button>
+                    <div class='milestoneList'></div>
+                    <input type='text' placeholder='Add task...' class='taskInput'>
+                    <button onclick='addTask(this)'>Add Task</button>
+                    <ul></ul>`;
+                
+                let milestoneList = projectDiv.querySelector(".milestoneList");
+                project.milestones.forEach(milestone => {
+                    let milestoneDiv = document.createElement("div");
+                    milestoneDiv.classList.add("milestone");
+                    milestoneDiv.innerHTML = `<strong>${milestone.name}</strong> (Due: ${milestone.dueDate}) <button onclick="removeMilestone(this)">❌</button>`;
+                    milestoneList.appendChild(milestoneDiv);
+                });
+                
+                let taskList = projectDiv.querySelector("ul");
+                project.tasks.forEach(task => {
+                    let li = document.createElement("li");
+                    li.innerHTML = `${task.text} <button onclick="removeTask(this)">❌</button>`;
+                    if (task.completed) li.classList.add("completed");
+                    li.onclick = function() { this.classList.toggle("completed"); saveProjects(); };
+                    taskList.appendChild(li);
+                });
+                
+                projectList.appendChild(projectDiv);
+            });
+        }
+    </script>
+</body>
+</html>
