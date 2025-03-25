@@ -3,92 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Details</title>
+    <title>Project Management</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; }
         .container { width: 600px; margin: 50px auto; text-align: left; }
         .form-group { display: flex; flex-direction: column; margin-bottom: 10px; }
         label { font-weight: bold; }
-        input { padding: 5px; }
+        input, select { padding: 5px; }
         button { padding: 5px; cursor: pointer; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
         th { background-color: #f4f4f4; }
+        a { text-decoration: none; color: blue; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Project Details</h2>
-        <p><strong>Project ID:</strong> <span id="projectID"></span></p>
-        <p><strong>Project Name:</strong> <span id="projectName"></span></p>
-        <p><strong>Project Manager:</strong> <span id="projectManager"></span></p>
-
-        <h3>Milestones</h3>
+        <h2>Project Management</h2>
         <div class="form-group">
-            <label for="milestoneName">Milestone Name:</label>
-            <input type="text" id="milestoneName" placeholder="Enter milestone name">
-            <label for="milestoneStart">Start Date:</label>
-            <input type="date" id="milestoneStart">
-            <label for="milestoneEnd">End Date:</label>
-            <input type="date" id="milestoneEnd">
-            <button onclick="addMilestone()">Add Milestone</button>
+            <label for="projectID">Project ID:</label>
+            <input type="text" id="projectID" placeholder="Enter project ID">
         </div>
+        <div class="form-group">
+            <label for="projectName">Project Name:</label>
+            <input type="text" id="projectName" placeholder="Enter project name">
+        </div>
+        <div class="form-group">
+            <label for="projectManager">Project Manager:</label>
+            <input type="text" id="projectManager" placeholder="Enter project manager">
+        </div>
+        <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate">
+        </div>
+        <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate">
+        </div>
+        <div class="form-group">
+            <label for="ragStatus">RAG Status:</label>
+            <select id="ragStatus">
+                <option value="Red">Red</option>
+                <option value="Amber">Amber</option>
+                <option value="Green">Green</option>
+            </select>
+        </div>
+        <button onclick="addProject()">Add Project</button>
+        
         <table>
             <thead>
-                <tr><th>Name</th><th>Start Date</th><th>End Date</th></tr>
+                <tr>
+                    <th>Project ID</th>
+                    <th>Project Name</th>
+                    <th>Project Manager</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>RAG Status</th>
+                </tr>
             </thead>
-            <tbody id="milestoneTable"></tbody>
+            <tbody id="projectTableBody">
+            </tbody>
         </table>
-
-        <h3>Risk Log</h3>
-        <div class="form-group">
-            <input type="text" id="riskEntry" placeholder="Enter risk">
-            <button onclick="addRisk()">Add Risk</button>
-        </div>
-        <ul id="riskList"></ul>
-
-        <h3>Action Log</h3>
-        <div class="form-group">
-            <input type="text" id="actionEntry" placeholder="Enter action">
-            <button onclick="addAction()">Add Action</button>
-        </div>
-        <ul id="actionList"></ul>
     </div>
     
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            document.getElementById("projectID").innerText = urlParams.get("id");
-            document.getElementById("projectName").innerText = "Sample Project";
-            document.getElementById("projectManager").innerText = "John Doe";
-        });
-        
-        function addMilestone() {
-            let name = document.getElementById("milestoneName").value.trim();
-            let start = document.getElementById("milestoneStart").value;
-            let end = document.getElementById("milestoneEnd").value;
-            if (!name || !start || !end) return;
-            let table = document.getElementById("milestoneTable");
-            let row = table.insertRow();
-            row.insertCell(0).innerText = name;
-            row.insertCell(1).innerText = start;
-            row.insertCell(2).innerText = end;
-        }
-        
-        function addRisk() {
-            let risk = document.getElementById("riskEntry").value.trim();
-            if (!risk) return;
-            let li = document.createElement("li");
-            li.innerText = risk;
-            document.getElementById("riskList").appendChild(li);
-        }
-        
-        function addAction() {
-            let action = document.getElementById("actionEntry").value.trim();
-            if (!action) return;
-            let li = document.createElement("li");
-            li.innerText = action;
-            document.getElementById("actionList").appendChild(li);
+        function addProject() {
+            let projectID = document.getElementById("projectID").value.trim();
+            let projectName = document.getElementById("projectName").value.trim();
+            let projectManager = document.getElementById("projectManager").value.trim();
+            let startDate = document.getElementById("startDate").value;
+            let endDate = document.getElementById("endDate").value;
+            let ragStatus = document.getElementById("ragStatus").value;
+            
+            if (projectID === "" || projectName === "" || projectManager === "" || startDate === "" || endDate === "") return;
+            
+            let projectTableBody = document.getElementById("projectTableBody");
+            let row = projectTableBody.insertRow();
+            let projectLink = document.createElement("a");
+            projectLink.href = `project.html?id=${projectID}`;
+            projectLink.innerText = projectID;
+            projectLink.target = "_blank";
+            let cell0 = row.insertCell(0);
+            cell0.appendChild(projectLink);
+            row.insertCell(1).innerText = projectName;
+            row.insertCell(2).innerText = projectManager;
+            row.insertCell(3).innerText = startDate;
+            row.insertCell(4).innerText = endDate;
+            row.insertCell(5).innerText = ragStatus;
+            
+            document.getElementById("projectID").value = "";
+            document.getElementById("projectName").value = "";
+            document.getElementById("projectManager").value = "";
+            document.getElementById("startDate").value = "";
+            document.getElementById("endDate").value = "";
+            document.getElementById("ragStatus").value = "Red";
         }
     </script>
 </body>
