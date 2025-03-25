@@ -101,3 +101,40 @@
     </script>
 </body>
 </html>
+<table>
+    <thead>
+        <tr>
+            <th>Project ID</th>
+            <th>Project Name</th>
+            <th>Project Manager</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>RAG Status</th>
+        </tr>
+    </thead>
+    <tbody id="projectTableBody"></tbody>
+</table>
+
+<script>
+    function loadProjects() {
+        let tableBody = document.getElementById("projectTableBody");
+        tableBody.innerHTML = "";
+        
+        for (let key in localStorage) {
+            if (key.startsWith("project_")) {
+                let projectData = JSON.parse(localStorage.getItem(key));
+                let row = `<tr>
+                    <td><a href="project.html?id=${projectData.projectID}">${projectData.projectID}</a></td>
+                    <td>${projectData.projectName}</td>
+                    <td>${projectData.projectManager}</td>
+                    <td>${projectData.startDate}</td>
+                    <td>${projectData.endDate}</td>
+                    <td>${projectData.ragStatus}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            }
+        }
+    }
+
+    window.onload = loadProjects;
+</script>
